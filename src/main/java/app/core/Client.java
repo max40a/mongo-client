@@ -46,6 +46,7 @@ public class Client {
     }
 
     public FindIterable<Document> doQuery(String query) {
+        System.out.println("query in do query = " + query);
         /*Mongo*/
         MongoClient mongoClient = new MongoClient(hostName, port);
         MongoDatabase database = mongoClient.getDatabase(databaseName);
