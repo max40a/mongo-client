@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 public class Client {
 
-    private final static String AND = "AND";
-    private final static String OR = "OR";
+    private final static String AND = "$and";
+    private final static String OR = "$or";
     private final static String DESC = "DESC";
     private final static String ASC = "ASC";
 
@@ -23,17 +23,6 @@ public class Client {
     private int port;
     private String databaseName;
     private Parser parser;
-
-    private static Map<String, String> expressionsMap = new HashMap<String, String>() {{
-        put("=", "$eq");
-        put(">", "$gt");
-        put("<", "$lt");
-        put(">=", "$gte");
-        put("<=", "$lte");
-        put("<>", "$ne");
-        put("AND", "$and");
-        put("OR", "$or");
-    }};
 
     public Client(Parser parser) {
         this.parser = parser;
@@ -46,7 +35,6 @@ public class Client {
     }
 
     public FindIterable<Document> doQuery(String query) {
-        System.out.println("query in do query = " + query);
         /*Mongo*/
         MongoClient mongoClient = new MongoClient(hostName, port);
         MongoDatabase database = mongoClient.getDatabase(databaseName);
@@ -81,7 +69,7 @@ public class Client {
             BasicDBList and = new BasicDBList();
             and.add(leftCondition);
             and.add(rightCondition);
-            basicDBObject.put(expressionsMap.get(AND), and);
+            basicDBObject.put(AND, and);
         } else if (where.contains(OR)) {
             BasicDBObject leftCondition = getWhereConditions(computeLeftCondition(where, OR));
             BasicDBObject rightCondition = getWhereConditions(computeRightCondition(where, OR));
@@ -89,14 +77,14 @@ public class Client {
             BasicDBList or = new BasicDBList();
             or.add(leftCondition);
             or.add(rightCondition);
-            basicDBObject.put(expressionsMap.get(OR), or);
+            basicDBObject.put(OR, or);
         } else {
             String[] split = where.split(" ");
-            if (split[1].equals("=")) {
+            if (split[1].equals("$eq")) {
                 basicDBObject.put(split[0], split[2]);
                 return basicDBObject;
             } else {
-                basicDBObject.put(split[0], new BasicDBObject(expressionsMap.get(split[1]), split[2]));
+                basicDBObject.put(split[0], new BasicDBObject(split[1], split[2]));
             }
         }
         return basicDBObject;

@@ -24,20 +24,24 @@ public class CliHandler {
         options = new Options();
         options.addOption(Option.builder("u")
                 //.required(true)
+                .longOpt(URL)
                 .desc("url to database")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .build());
         options.addOption(Option.builder("q")
+                .longOpt(QUERY)
                 .desc("sql query")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .build());
         options.addOption(Option.builder("h")
+                .longOpt(HELP)
                 .desc("help menu")
                 .hasArg(false)
                 .build());
         options.addOption(Option.builder("e")
+                .longOpt(EXIT)
                 .desc("exit out program")
                 .build());
 
@@ -45,24 +49,15 @@ public class CliHandler {
     }
 
     public void parse(String[] args) throws Exception {
-        CommandLineParser parser = new PosixParser();
+        CommandLineParser parser = new DefaultParser();
         commandLine = parser.parse(options, args);
-        if (commandLine.hasOption("h")) {
+        if (commandLine.hasOption(HELP)) {
             printCliHelp();
-        } else if (commandLine.hasOption("u")) {
-            String urlStringNotation = commandLine.getOptionValue("u");
-            URL url = new URL(urlStringNotation);
-            String host = url.getHost();
-            int port = url.getPort();
-            String path = url.getPath();
-            if (path.startsWith("/")) {
-                path = path.substring(1, path.length());
-            }
-            client.initDbProperties(host, port, path);
-        } else if (commandLine.hasOption("q")) {
-            String query = commandLine.getOptionValue("q");
-            client.doQuery(query).forEach((Block<? super Document>) System.out::println);
-        } else if (commandLine.hasOption("e")) {
+        } else if (commandLine.hasOption(URL)) {
+            getDatabaseConnectionParams();
+        } else if (commandLine.hasOption(QUERY)) {
+            getQuery();
+        } else if (commandLine.hasOption(EXIT)) {
             exit();
         }
     }
@@ -90,6 +85,6 @@ public class CliHandler {
 
     public void printCliHelp() {
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.printHelp("java -jar mongo-client.jar", options);
+        helpFormatter.printHelp("java -jar mongo-client-jar-with-dependencies.jar", options);
     }
 }

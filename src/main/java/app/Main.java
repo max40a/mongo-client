@@ -4,18 +4,24 @@ import app.cli.CliHandler;
 import app.core.Client;
 import app.core.Parser;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
 
-    //http://localhost:27017/testdb
-
     private static Scanner scanner = new Scanner(System.in);
-    private static String query = "SELECT * FROM counter WHERE id >= 2 AND id <> 5 ORDER_BY title ASC";
 
-    private static String hostName = "localhost";
-    private static int port = 27017;
-    private static String dataBase = "testdb";
+    private static Map<String, String> expressionsMap = new HashMap<String, String>() {{
+        put(" = ", " $eq ");
+        put(" > ", " $gt ");
+        put(" < ", " $lt ");
+        put(" >= ", " $gte ");
+        put(" <= ", " $lte ");
+        put(" <> ", " $ne ");
+        put(" AND ", " $and ");
+        put(" OR ", " $or ");
+    }};
 
     public static void main(String[] args) throws Exception {
         Parser sqlParser = new Parser();
@@ -24,16 +30,21 @@ public class Main {
         cliHandler.parse(args);
         while (true) {
             try {
-
-                System.out.print("query>");
+                System.out.print("mongo-client>");
                 String next = scanner.nextLine();
-                cliHandler.parse(new String[]{next});
-
+                cliHandler.parse(new String[]{handleNext(next)});
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        /*mongoClient.initDbProperties(hostName, port, dataBase);
-        mongoClient.doQuery(query).forEach((Block<? super Document>) System.out::println);*/
+    }
+
+    private static String handleNext(String next) {
+        for (String s : expressionsMap.keySet()) {
+            if (next.contains(s)) {
+                next = next.replace(s, expressionsMap.get(s));
+            }
+        }
+        return next;
     }
 }
