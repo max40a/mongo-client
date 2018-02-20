@@ -4,6 +4,7 @@ import app.cli.CliHandler;
 import app.core.Client;
 import app.core.Parser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -24,9 +25,7 @@ public class Main {
     }};
 
     public static void main(String[] args) throws Exception {
-        Parser sqlParser = new Parser();
-        Client mongoClient = new Client(sqlParser);
-        CliHandler cliHandler = new CliHandler(mongoClient);
+        CliHandler cliHandler = new CliHandler();
         cliHandler.parse(args);
         while (true) {
             try {

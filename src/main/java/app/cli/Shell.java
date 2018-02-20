@@ -4,7 +4,7 @@ import app.Main;
 
 public class Shell {
 
-    private static String url = "http://localhost:27017/testdb";
+    private static String url = "mongodb://localhost:27017/testdb";
 
     private static String query = "SELECT * FROM counter WHERE id >= 2 AND id <> 5 ORDER_BY title ASC";
     private static String query1 = "SELECT * FROM counter WHERE title = ACID";

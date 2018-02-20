@@ -2,7 +2,6 @@ package app.core;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -19,25 +18,15 @@ public class Client {
     private final static String DESC = "DESC";
     private final static String ASC = "ASC";
 
-    private String hostName;
-    private int port;
-    private String databaseName;
     private Parser parser;
+    private MongoDatabase database;
 
-    public Client(Parser parser) {
+    public Client(Parser parser, MongoDatabase database) {
         this.parser = parser;
-    }
-
-    public void initDbProperties(String hostName, int port, String databaseName) {
-        this.hostName = hostName;
-        this.port = port;
-        this.databaseName = databaseName;
+        this.database = database;
     }
 
     public FindIterable<Document> doQuery(String query) {
-        /*Mongo*/
-        MongoClient mongoClient = new MongoClient(hostName, port);
-        MongoDatabase database = mongoClient.getDatabase(databaseName);
         Map<String, String> handledRequest = parser.parseSqlQuery(query);
 
         MongoCollection<Document> collection = database.getCollection(handledRequest.get(OptionName.FROM.getPropertyName()));

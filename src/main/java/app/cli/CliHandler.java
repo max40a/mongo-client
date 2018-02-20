@@ -1,12 +1,14 @@
 package app.cli;
 
 import app.core.Client;
+import app.core.MongoUtil;
+import app.core.Parser;
 import com.mongodb.Block;
 import org.apache.commons.cli.*;
 import org.bson.Document;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Arrays;
 
 public class CliHandler {
 
@@ -20,10 +22,9 @@ public class CliHandler {
 
     private Client client;
 
-    public CliHandler(Client client) {
+    public CliHandler() {
         options = new Options();
         options.addOption(Option.builder("u")
-                //.required(true)
                 .longOpt(URL)
                 .desc("url to database")
                 .hasArg(true)
@@ -44,17 +45,16 @@ public class CliHandler {
                 .longOpt(EXIT)
                 .desc("exit out program")
                 .build());
-
-        this.client = client;
     }
 
     public void parse(String[] args) throws Exception {
+        System.out.println("args = " + Arrays.toString(args));
         CommandLineParser parser = new DefaultParser();
         commandLine = parser.parse(options, args);
         if (commandLine.hasOption(HELP)) {
             printCliHelp();
         } else if (commandLine.hasOption(URL)) {
-            getDatabaseConnectionParams();
+            initDatabase();
         } else if (commandLine.hasOption(QUERY)) {
             getQuery();
         } else if (commandLine.hasOption(EXIT)) {
@@ -62,16 +62,9 @@ public class CliHandler {
         }
     }
 
-    public void getDatabaseConnectionParams() throws MalformedURLException {
+    public void initDatabase() throws MalformedURLException {
         String urlStringNotation = commandLine.getOptionValue(URL);
-        URL url = new URL(urlStringNotation);
-        String host = url.getHost();
-        int port = url.getPort();
-        String path = url.getPath();
-        if (path.startsWith("/")) {
-            path = path.substring(1, path.length());
-        }
-        client.initDbProperties(host, port, path);
+        client = new Client(new Parser(), MongoUtil.getDatabase(urlStringNotation.trim()));
     }
 
     public void getQuery() {
@@ -80,11 +73,12 @@ public class CliHandler {
     }
 
     public void exit() {
+        MongoUtil.closeConnection();
         System.exit(0);
     }
 
     public void printCliHelp() {
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.printHelp("java -jar mongo-client-jar-with-dependencies.jar", options);
+        helpFormatter.printHelp("java -jar my-mongo-client.jar", options);
     }
 }
