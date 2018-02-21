@@ -1,13 +1,11 @@
 package app;
 
 import app.cli.CliHandler;
-import app.core.Client;
-import app.core.Parser;
+import app.core.syntax.check.ReservedWordsChecker;
+import app.core.syntax.check.SelectQueryChecker;
+import app.core.syntax.check.SyntaxChecker;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -24,21 +22,26 @@ public class Main {
         put(" OR ", " $or ");
     }};
 
+    private static List<SyntaxChecker> checkers = new ArrayList<SyntaxChecker>() {{
+        add(new ReservedWordsChecker());
+        add(new SelectQueryChecker());
+    }};
+
     public static void main(String[] args) throws Exception {
-        CliHandler cliHandler = new CliHandler();
+        CliHandler cliHandler = new CliHandler(checkers);
         cliHandler.parse(args);
         while (true) {
             try {
                 System.out.print("mongo-client>");
-                String next = scanner.nextLine();
-                cliHandler.parse(new String[]{handleNext(next)});
+                String nextQuery = scanner.nextLine();
+                cliHandler.parse(new String[]{prepareQuery(nextQuery)});
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
     }
 
-    private static String handleNext(String next) {
+    private static String prepareQuery(String next) {
         for (String s : expressionsMap.keySet()) {
             if (next.contains(s)) {
                 next = next.replace(s, expressionsMap.get(s));

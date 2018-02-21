@@ -3,12 +3,13 @@ package app.cli;
 import app.core.Client;
 import app.core.MongoUtil;
 import app.core.Parser;
+import app.core.syntax.check.SyntaxChecker;
 import com.mongodb.Block;
 import org.apache.commons.cli.*;
 import org.bson.Document;
 
 import java.net.MalformedURLException;
-import java.util.Arrays;
+import java.util.List;
 
 public class CliHandler {
 
@@ -16,13 +17,16 @@ public class CliHandler {
     private static final String QUERY = "query";
     private static final String HELP = "help";
     private static final String EXIT = "exit";
+    private static final String CURRENT_DB_URL = "current-db-url";
 
     private Options options;
     private CommandLine commandLine;
 
     private Client client;
+    private List<SyntaxChecker> syntaxCheckers;
 
-    public CliHandler() {
+    public CliHandler(List<SyntaxChecker> syntaxCheckers) {
+        this.syntaxCheckers = syntaxCheckers;
         options = new Options();
         options.addOption(Option.builder("u")
                 .longOpt(URL)
@@ -45,10 +49,14 @@ public class CliHandler {
                 .longOpt(EXIT)
                 .desc("exit out program")
                 .build());
+        options.addOption(Option.builder("c")
+                .longOpt(CURRENT_DB_URL)
+                .desc("show current db url")
+                .hasArg(false)
+                .build());
     }
 
     public void parse(String[] args) throws Exception {
-        System.out.println("args = " + Arrays.toString(args));
         CommandLineParser parser = new DefaultParser();
         commandLine = parser.parse(options, args);
         if (commandLine.hasOption(HELP)) {
@@ -59,6 +67,8 @@ public class CliHandler {
             getQuery();
         } else if (commandLine.hasOption(EXIT)) {
             exit();
+        } else if (commandLine.hasOption("c")) {
+            System.out.println(MongoUtil.getUrlToCurrentDatabase());
         }
     }
 
@@ -69,6 +79,7 @@ public class CliHandler {
 
     public void getQuery() {
         String query = commandLine.getOptionValue(QUERY);
+        syntaxCheckers.forEach(syntaxChecker -> syntaxChecker.check(query.trim()));
         client.doQuery(query).forEach((Block<? super Document>) System.out::println);
     }
 
@@ -78,7 +89,13 @@ public class CliHandler {
     }
 
     public void printCliHelp() {
+        String commandLineSyntax = "USE : java -jar my-mongo-client.jar";
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.printHelp("java -jar my-mongo-client.jar", options);
+        helpFormatter.printHelp(
+                commandLineSyntax,
+                "=================HELP MENU=================",
+                options,
+                "============================================"
+        );
     }
 }
