@@ -1,6 +1,4 @@
-package app.cli;
-
-import app.Main;
+package app;
 
 public class Shell {
 

@@ -1,6 +1,7 @@
 package app;
 
-import app.cli.CliHandler;
+import app.cli.Cli;
+import app.core.ConsoleService;
 import app.core.syntax.check.ReservedWordsChecker;
 import app.core.syntax.check.SelectQueryChecker;
 import app.core.syntax.check.SyntaxChecker;
@@ -28,13 +29,14 @@ public class Main {
     }};
 
     public static void main(String[] args) throws Exception {
-        CliHandler cliHandler = new CliHandler(checkers);
-        cliHandler.parse(args);
+        Cli cli = new Cli();
+        ConsoleService consoleService = new ConsoleService(checkers, cli);
+        consoleService.doService(args);
         while (true) {
             try {
                 System.out.print("mongo-client>");
                 String nextQuery = scanner.nextLine();
-                cliHandler.parse(new String[]{prepareQuery(nextQuery)});
+                consoleService.doService(new String[]{prepareQuery(nextQuery)});
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

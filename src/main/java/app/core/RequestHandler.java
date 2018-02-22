@@ -10,8 +10,9 @@ import org.bson.Document;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-public class Client {
+public class RequestHandler {
 
     private final static String AND = "$and";
     private final static String OR = "$or";
@@ -21,21 +22,24 @@ public class Client {
     private Parser parser;
     private MongoDatabase database;
 
-    public Client(Parser parser, MongoDatabase database) {
+    public RequestHandler(Parser parser, MongoDatabase database) {
         this.parser = parser;
         this.database = database;
     }
 
-    public FindIterable<Document> doQuery(String query) {
-        Map<String, String> handledRequest = parser.parseSqlQuery(query);
-
-        MongoCollection<Document> collection = database.getCollection(handledRequest.get(OptionName.FROM.getPropertyName()));
-        return collection.find()
-                .projection(Projections.include(getProjection(handledRequest.get(OptionName.SELECT.getPropertyName()))))
-                .filter(getWhereConditions(handledRequest.get(OptionName.WHERE.getPropertyName())))
-                .sort(getSortCondition(handledRequest.get(OptionName.ORDER_BY.getPropertyName())))
-                .skip(getNumberOfInts(handledRequest.get(OptionName.SKIP.getPropertyName())))
-                .limit(getNumberOfInts(handledRequest.get(OptionName.LIMIT.getPropertyName())));
+    public List<String> doQuery(String query) {
+        Map<String, String> parsedSqlQuery = parser.parseSqlQuery(query);
+        MongoCollection<Document> collection = database.getCollection(parsedSqlQuery.get(OptionName.FROM.getPropertyName()));
+        FindIterable<Document> resultOfQuery = collection.find()
+                .projection(Projections.include(getProjection(parsedSqlQuery.get(OptionName.SELECT.getPropertyName()))))
+                .filter(getWhereConditions(parsedSqlQuery.get(OptionName.WHERE.getPropertyName())))
+                .sort(getSortCondition(parsedSqlQuery.get(OptionName.ORDER_BY.getPropertyName())))
+                .skip(getNumberOfInts(parsedSqlQuery.get(OptionName.SKIP.getPropertyName())))
+                .limit(getNumberOfInts(parsedSqlQuery.get(OptionName.LIMIT.getPropertyName())));
+        return StreamSupport.stream(resultOfQuery.spliterator(), false)
+                .map(Document::entrySet)
+                .map(Objects::toString)
+                .collect(Collectors.toList());
     }
 
     private List<String> getProjection(String projection) {
@@ -69,6 +73,7 @@ public class Client {
             basicDBObject.put(OR, or);
         } else {
             String[] split = where.split(" ");
+            assert split.length == 3;
             if (split[1].equals("$eq")) {
                 basicDBObject.put(split[0], split[2]);
                 return basicDBObject;

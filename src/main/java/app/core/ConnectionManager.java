@@ -4,12 +4,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 
-public class MongoUtil {
+public class ConnectionManager {
 
     private static MongoClient client;
     private static String databaseName;
 
-    private MongoUtil() {
+    private ConnectionManager() {
     }
 
     public static MongoDatabase getDatabase(String url) {
@@ -25,6 +25,6 @@ public class MongoUtil {
     }
 
     public static String getUrlToCurrentDatabase() {
-        return String.format("Url to current  mongodb://%s/%s", client.getAddress().toString(), databaseName);
+        return String.format("Url to current db - mongodb://%s/%s", client.getAddress().toString(), databaseName);
     }
 }
