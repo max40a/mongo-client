@@ -4,14 +4,8 @@ import org.apache.commons.cli.*;
 
 public class Cli {
 
-    private static final String HELP_MENU_HEADER = "=================HELP MENU=================";
+    private static final String HELP_MENU_HEADER = "=================HELP MENU==================";
     private static final String HELP_MENU_FOOTER = "============================================";
-
-    private static final String URL = "url";
-    private static final String QUERY = "query";
-    private static final String HELP = "help";
-    private static final String EXIT = "exit";
-    private static final String CURRENT_DB_URL = "current-db-url";
 
     private Options options = new Options();
 
@@ -36,30 +30,49 @@ public class Cli {
 
     private void initOptions() {
         options.addOption(Option.builder("u")
-                .longOpt(URL)
+                .longOpt(ConsoleCommand.URL.notation)
                 .desc("url to database")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .build());
         options.addOption(Option.builder("q")
-                .longOpt(QUERY)
+                .longOpt(ConsoleCommand.QUERY.notation)
                 .desc("sql query")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .build());
         options.addOption(Option.builder("h")
-                .longOpt(HELP)
+                .longOpt(ConsoleCommand.HELP.notation)
                 .desc("help menu")
                 .hasArg(false)
                 .build());
         options.addOption(Option.builder("e")
-                .longOpt(EXIT)
+                .longOpt(ConsoleCommand.EXIT.notation)
                 .desc("exit out program")
                 .build());
         options.addOption(Option.builder("c")
-                .longOpt(CURRENT_DB_URL)
+                .longOpt(ConsoleCommand.CURRENT_DB.notation)
                 .desc("show current db url")
                 .hasArg(false)
                 .build());
+    }
+
+    public enum ConsoleCommand {
+
+        URL("url"),
+        QUERY("query"),
+        HELP("help"),
+        EXIT("exit"),
+        CURRENT_DB("current-db-url");
+
+        private String notation;
+
+        ConsoleCommand(String notation) {
+            this.notation = notation;
+        }
+
+        public String getNotation() {
+            return this.notation;
+        }
     }
 }

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static app.cli.Cli.ConsoleCommand.*;
+
 public class ConsoleService {
 
     private static Map<String, String> expressionsMap = new HashMap<String, String>() {{
@@ -25,12 +27,6 @@ public class ConsoleService {
         put(" AND ", " $and ");
         put(" OR ", " $or ");
     }};
-
-    private static final String URL = "url";
-    private static final String QUERY = "query";
-    private static final String HELP = "help";
-    private static final String EXIT = "exit";
-    private static final String CURRENT_DB_URL = "current-db-url";
 
     private MongoClientManager mongoClientManager;
     private MongoRequestHandler mongoRequestHandler;
@@ -46,22 +42,22 @@ public class ConsoleService {
         this.cli = cli;
     }
 
-    public void doService(String[] args) throws Exception {
+    public void doService(String... args) throws Exception {
         commandLine = cli.getPreparedCommandLine(prepareArgs(args));
-        if (commandLine.hasOption(HELP)) {
+        if (commandLine.hasOption(HELP.getNotation())) {
             cli.printCliHelp();
-        } else if (commandLine.hasOption(URL)) {
+        } else if (commandLine.hasOption(URL.getNotation())) {
             initDatabase();
-        } else if (commandLine.hasOption(QUERY)) {
+        } else if (commandLine.hasOption(QUERY.getNotation())) {
             processQuery();
-        } else if (commandLine.hasOption(EXIT)) {
+        } else if (commandLine.hasOption(EXIT.getNotation())) {
             exit();
-        } else if (commandLine.hasOption(CURRENT_DB_URL)) {
+        } else if (commandLine.hasOption(CURRENT_DB.getNotation())) {
             System.out.println(mongoClientManager.getUriToCurrentDatabase());
         }
     }
 
-    private String[] prepareArgs(String[] args) {
+    private String[] prepareArgs(String... args) {
         for (int i = 0; i < args.length; i++) {
             for (String s : expressionsMap.keySet()) {
                 if (args[i].contains(s)) {
@@ -74,12 +70,12 @@ public class ConsoleService {
     }
 
     private void initDatabase() throws MalformedURLException {
-        String urlStringNotation = commandLine.getOptionValue(URL);
+        String urlStringNotation = commandLine.getOptionValue(URL.getNotation());
         mongoRequestHandler = new MongoRequestHandler(mongoClientManager.getDatabaseByUri(urlStringNotation.trim()));
     }
 
     private void processQuery() {
-        String query = commandLine.getOptionValue(QUERY);
+        String query = commandLine.getOptionValue(QUERY.getNotation());
         //validate SQL
         syntaxCheckers.forEach(syntaxChecker -> syntaxChecker.validateSqlQuery(query.trim()));
 

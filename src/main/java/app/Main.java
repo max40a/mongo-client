@@ -26,7 +26,7 @@ public class Main {
             try {
                 System.out.print("mongo-client>");
                 String nextQuery = scanner.nextLine();
-                consoleService.doService(new String[]{nextQuery});
+                consoleService.doService(nextQuery);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
