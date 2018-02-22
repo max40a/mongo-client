@@ -1,7 +1,11 @@
-package app.core;
+package app.service;
 
 import app.cli.Cli;
-import app.core.syntax.check.SyntaxChecker;
+import app.mongo.MongoQueryPreparer;
+import app.parser.Parser;
+import app.syntax.check.SyntaxChecker;
+import app.mongo.MongoClientManager;
+import app.mongo.MongoRequestHandler;
 import org.apache.commons.cli.CommandLine;
 
 import java.net.MalformedURLException;
@@ -15,12 +19,16 @@ public class ConsoleService {
     private static final String EXIT = "exit";
     private static final String CURRENT_DB_URL = "current-db-url";
 
-    private RequestHandler requestHandler;
+    private MongoClientManager mongoClientManager;
+    private MongoRequestHandler mongoRequestHandler;
     private CommandLine commandLine;
     private List<SyntaxChecker> syntaxCheckers;
     private Cli cli;
 
-    public ConsoleService(List<SyntaxChecker> syntaxCheckers, Cli cli) {
+    public ConsoleService(MongoClientManager mongoClientManager,
+                          List<SyntaxChecker> syntaxCheckers,
+                          Cli cli) {
+        this.mongoClientManager = mongoClientManager;
         this.syntaxCheckers = syntaxCheckers;
         this.cli = cli;
     }
@@ -32,27 +40,30 @@ public class ConsoleService {
         } else if (commandLine.hasOption(URL)) {
             initDatabase();
         } else if (commandLine.hasOption(QUERY)) {
-            getQuery();
+            processQuery();
         } else if (commandLine.hasOption(EXIT)) {
             exit();
         } else if (commandLine.hasOption(CURRENT_DB_URL)) {
-            System.out.println(ConnectionManager.getUrlToCurrentDatabase());
+            System.out.println(mongoClientManager.getUriToCurrentDatabase());
         }
     }
 
     private void initDatabase() throws MalformedURLException {
         String urlStringNotation = commandLine.getOptionValue(URL);
-        requestHandler = new RequestHandler(new Parser(), ConnectionManager.getDatabase(urlStringNotation.trim()));
+        mongoRequestHandler = new MongoRequestHandler(mongoClientManager.getDatabaseByUri(urlStringNotation.trim()));
     }
 
-    private void getQuery() {
+    private void processQuery() {
         String query = commandLine.getOptionValue(QUERY);
-        syntaxCheckers.forEach(syntaxChecker -> syntaxChecker.check(query.trim()));
-        requestHandler.doQuery(query).forEach(System.out::println);
+        //validate SQL
+        syntaxCheckers.forEach(syntaxChecker -> syntaxChecker.validateSqlQuery(query.trim()));
+
+        MongoQueryPreparer preparer = new MongoQueryPreparer(new Parser());
+        mongoRequestHandler.doQuery(preparer.preparedMongoQuery(query)).forEach(System.out::println);
     }
 
     private void exit() {
-        ConnectionManager.closeConnection();
+        mongoClientManager.closeConnection();
         System.exit(0);
     }
 }

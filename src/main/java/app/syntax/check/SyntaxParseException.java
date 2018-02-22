@@ -1,4 +1,4 @@
-package app.core.syntax.check;
+package app.syntax.check;
 
 public class SyntaxParseException extends RuntimeException {
     public SyntaxParseException(String message) {

@@ -1,4 +1,4 @@
-package app.core.syntax.check;
+package app.syntax.check;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -7,7 +7,7 @@ import java.util.Map;
 public class ReservedWordsChecker extends SyntaxChecker {
 
     @Override
-    public void check(String query) {
+    public void validateSqlQuery(String query) {
         Map<String, Integer> checkedResult = new LinkedHashMap<>();
         reservedWords.forEach(s -> checkedResult.put(s, 0));
         Arrays.stream(query.split(" ")).forEach(s -> checkedResult.computeIfPresent(s, (k, v) -> v + 1));

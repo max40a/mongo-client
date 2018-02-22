@@ -1,4 +1,4 @@
-package app.core;
+package app.parser;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package app.core.syntax.check;
+package app.syntax.check;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,5 +14,5 @@ public abstract class SyntaxChecker {
         add("LIMIT");
     }};
 
-    public abstract void check(String query);
+    public abstract void validateSqlQuery(String query);
 }

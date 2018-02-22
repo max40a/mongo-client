@@ -1,9 +1,9 @@
-package app.core.syntax.check;
+package app.syntax.check;
 
 public class SelectQueryChecker extends SyntaxChecker {
 
     @Override
-    public void check(String query) {
+    public void validateSqlQuery(String query) {
         if (!query.startsWith("SELECT")) {
             throw new SyntaxParseException("support only select query, query must begin with SELECT <projections>");
         }

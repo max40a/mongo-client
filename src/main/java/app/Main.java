@@ -1,10 +1,11 @@
 package app;
 
 import app.cli.Cli;
-import app.core.ConsoleService;
-import app.core.syntax.check.ReservedWordsChecker;
-import app.core.syntax.check.SelectQueryChecker;
-import app.core.syntax.check.SyntaxChecker;
+import app.mongo.MongoClientManager;
+import app.service.ConsoleService;
+import app.syntax.check.ReservedWordsChecker;
+import app.syntax.check.SelectQueryChecker;
+import app.syntax.check.SyntaxChecker;
 
 import java.util.*;
 
@@ -30,7 +31,8 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Cli cli = new Cli();
-        ConsoleService consoleService = new ConsoleService(checkers, cli);
+        MongoClientManager mongoClientManager = new MongoClientManager();
+        ConsoleService consoleService = new ConsoleService(mongoClientManager, checkers, cli);
         consoleService.doService(args);
         while (true) {
             try {

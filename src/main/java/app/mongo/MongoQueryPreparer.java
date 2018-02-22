@@ -1,18 +1,14 @@
-package app.core;
+package app.mongo;
 
+import app.parser.OptionName;
+import app.parser.Parser;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Projections;
-import org.bson.Document;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-public class RequestHandler {
+public class MongoQueryPreparer {
 
     private final static String AND = "$and";
     private final static String OR = "$or";
@@ -20,26 +16,21 @@ public class RequestHandler {
     private final static String ASC = "ASC";
 
     private Parser parser;
-    private MongoDatabase database;
 
-    public RequestHandler(Parser parser, MongoDatabase database) {
+    public MongoQueryPreparer(Parser parser) {
         this.parser = parser;
-        this.database = database;
     }
 
-    public List<String> doQuery(String query) {
+    public PreparedMongoQuery preparedMongoQuery(String query) {
         Map<String, String> parsedSqlQuery = parser.parseSqlQuery(query);
-        MongoCollection<Document> collection = database.getCollection(parsedSqlQuery.get(OptionName.FROM.getPropertyName()));
-        FindIterable<Document> resultOfQuery = collection.find()
-                .projection(Projections.include(getProjection(parsedSqlQuery.get(OptionName.SELECT.getPropertyName()))))
-                .filter(getWhereConditions(parsedSqlQuery.get(OptionName.WHERE.getPropertyName())))
-                .sort(getSortCondition(parsedSqlQuery.get(OptionName.ORDER_BY.getPropertyName())))
-                .skip(getNumberOfInts(parsedSqlQuery.get(OptionName.SKIP.getPropertyName())))
-                .limit(getNumberOfInts(parsedSqlQuery.get(OptionName.LIMIT.getPropertyName())));
-        return StreamSupport.stream(resultOfQuery.spliterator(), false)
-                .map(Document::entrySet)
-                .map(Objects::toString)
-                .collect(Collectors.toList());
+        return PreparedMongoQuery.builder()
+                .target(parsedSqlQuery.get(OptionName.FROM.getPropertyName()))
+                .projections(getProjection(parsedSqlQuery.get(OptionName.SELECT.getPropertyName())))
+                .conditions(getWhereConditions(parsedSqlQuery.get(OptionName.WHERE.getPropertyName())))
+                .fields(getSortCondition(parsedSqlQuery.get(OptionName.ORDER_BY.getPropertyName())))
+                .skipRecords(getNumberOfInts(parsedSqlQuery.get(OptionName.SKIP.getPropertyName())))
+                .limitRecords(getNumberOfInts(parsedSqlQuery.get(OptionName.LIMIT.getPropertyName())))
+                .build();
     }
 
     private List<String> getProjection(String projection) {
