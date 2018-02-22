@@ -12,18 +12,6 @@ import java.util.*;
 public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
-
-    private static Map<String, String> expressionsMap = new HashMap<String, String>() {{
-        put(" = ", " $eq ");
-        put(" > ", " $gt ");
-        put(" < ", " $lt ");
-        put(" >= ", " $gte ");
-        put(" <= ", " $lte ");
-        put(" <> ", " $ne ");
-        put(" AND ", " $and ");
-        put(" OR ", " $or ");
-    }};
-
     private static List<SyntaxChecker> checkers = new ArrayList<SyntaxChecker>() {{
         add(new ReservedWordsChecker());
         add(new SelectQueryChecker());
@@ -38,19 +26,10 @@ public class Main {
             try {
                 System.out.print("mongo-client>");
                 String nextQuery = scanner.nextLine();
-                consoleService.doService(new String[]{prepareQuery(nextQuery)});
+                consoleService.doService(new String[]{nextQuery});
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-    }
-
-    private static String prepareQuery(String next) {
-        for (String s : expressionsMap.keySet()) {
-            if (next.contains(s)) {
-                next = next.replace(s, expressionsMap.get(s));
-            }
-        }
-        return next;
     }
 }

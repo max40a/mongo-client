@@ -1,6 +1,6 @@
 package app.parser;
 
-public enum OptionName {
+public enum SqlOptionName {
 
     SELECT("PROJECTIONS"),
     FROM("TARGET"),
@@ -11,7 +11,7 @@ public enum OptionName {
 
     private String propertyName;
 
-    OptionName(String property) {
+    SqlOptionName(String property) {
         this.propertyName = property;
     }
 

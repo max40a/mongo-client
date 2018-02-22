@@ -4,6 +4,9 @@ import org.apache.commons.cli.*;
 
 public class Cli {
 
+    private static final String HELP_MENU_HEADER = "=================HELP MENU=================";
+    private static final String HELP_MENU_FOOTER = "============================================";
+
     private static final String URL = "url";
     private static final String QUERY = "query";
     private static final String HELP = "help";
@@ -17,8 +20,7 @@ public class Cli {
     }
 
     public CommandLine getPreparedCommandLine(String[] args) throws ParseException {
-        CommandLineParser parser = new DefaultParser();
-        return parser.parse(options, args);
+        return new DefaultParser().parse(options, args);
     }
 
     public void printCliHelp() {
@@ -26,9 +28,9 @@ public class Cli {
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp(
                 commandLineSyntax,
-                "=================HELP MENU=================",
+                HELP_MENU_HEADER,
                 options,
-                "============================================"
+                HELP_MENU_FOOTER
         );
     }
 

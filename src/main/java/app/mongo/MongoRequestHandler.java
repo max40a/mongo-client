@@ -1,9 +1,5 @@
 package app.mongo;
 
-import app.parser.OptionName;
-import app.parser.Parser;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;

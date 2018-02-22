@@ -12,13 +12,13 @@ public class Parser {
         return parseQuery(analyzePresentFields(query), query);
     }
 
-    private List<OptionName> analyzePresentFields(String query) {
-        return Arrays.stream(OptionName.values())
+    private List<SqlOptionName> analyzePresentFields(String query) {
+        return Arrays.stream(SqlOptionName.values())
                 .filter(f -> query.contains(f.name()))
                 .collect(Collectors.toList());
     }
 
-    private Map<String, String> parseQuery(List<OptionName> options, String query) {
+    private Map<String, String> parseQuery(List<SqlOptionName> options, String query) {
         Map<String, String> result = new HashMap<>();
         for (int i = 0; i < options.size() - 1; i++) {
             String key = options.get(i).name();

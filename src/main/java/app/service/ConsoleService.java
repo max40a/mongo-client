@@ -9,9 +9,22 @@ import app.mongo.MongoRequestHandler;
 import org.apache.commons.cli.CommandLine;
 
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConsoleService {
+
+    private static Map<String, String> expressionsMap = new HashMap<String, String>() {{
+        put(" = ", " $eq ");
+        put(" > ", " $gt ");
+        put(" < ", " $lt ");
+        put(" >= ", " $gte ");
+        put(" <= ", " $lte ");
+        put(" <> ", " $ne ");
+        put(" AND ", " $and ");
+        put(" OR ", " $or ");
+    }};
 
     private static final String URL = "url";
     private static final String QUERY = "query";
@@ -34,7 +47,7 @@ public class ConsoleService {
     }
 
     public void doService(String[] args) throws Exception {
-        commandLine = cli.getPreparedCommandLine(args);
+        commandLine = cli.getPreparedCommandLine(prepareArgs(args));
         if (commandLine.hasOption(HELP)) {
             cli.printCliHelp();
         } else if (commandLine.hasOption(URL)) {
@@ -46,6 +59,18 @@ public class ConsoleService {
         } else if (commandLine.hasOption(CURRENT_DB_URL)) {
             System.out.println(mongoClientManager.getUriToCurrentDatabase());
         }
+    }
+
+    private String[] prepareArgs(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            for (String s : expressionsMap.keySet()) {
+                if (args[i].contains(s)) {
+                    args[i] = args[i].replace(s, expressionsMap.get(s));
+                }
+            }
+
+        }
+        return args;
     }
 
     private void initDatabase() throws MalformedURLException {

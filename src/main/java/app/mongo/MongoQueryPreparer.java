@@ -1,6 +1,6 @@
 package app.mongo;
 
-import app.parser.OptionName;
+import app.parser.SqlOptionName;
 import app.parser.Parser;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -22,14 +22,14 @@ public class MongoQueryPreparer {
     }
 
     public PreparedMongoQuery preparedMongoQuery(String query) {
-        Map<String, String> parsedSqlQuery = parser.parseSqlQuery(query);
+        Map<String, String> parsedSqlQueryMap = parser.parseSqlQuery(query);
         return PreparedMongoQuery.builder()
-                .target(parsedSqlQuery.get(OptionName.FROM.getPropertyName()))
-                .projections(getProjection(parsedSqlQuery.get(OptionName.SELECT.getPropertyName())))
-                .conditions(getWhereConditions(parsedSqlQuery.get(OptionName.WHERE.getPropertyName())))
-                .fields(getSortCondition(parsedSqlQuery.get(OptionName.ORDER_BY.getPropertyName())))
-                .skipRecords(getNumberOfInts(parsedSqlQuery.get(OptionName.SKIP.getPropertyName())))
-                .limitRecords(getNumberOfInts(parsedSqlQuery.get(OptionName.LIMIT.getPropertyName())))
+                .target(parsedSqlQueryMap.get(SqlOptionName.FROM.getPropertyName()))
+                .projections(getProjection(parsedSqlQueryMap.get(SqlOptionName.SELECT.getPropertyName())))
+                .conditions(getWhereConditions(parsedSqlQueryMap.get(SqlOptionName.WHERE.getPropertyName())))
+                .fields(getSortCondition(parsedSqlQueryMap.get(SqlOptionName.ORDER_BY.getPropertyName())))
+                .skipRecords(getNumberOfInts(parsedSqlQueryMap.get(SqlOptionName.SKIP.getPropertyName())))
+                .limitRecords(getNumberOfInts(parsedSqlQueryMap.get(SqlOptionName.LIMIT.getPropertyName())))
                 .build();
     }
 
@@ -42,7 +42,7 @@ public class MongoQueryPreparer {
     }
 
     private BasicDBObject getWhereConditions(String where) {
-        BasicDBObject basicDBObject = new BasicDBObject();
+        BasicDBObject whereObject = new BasicDBObject();
         if (Objects.isNull(where)) {
             return new BasicDBObject();
         }
@@ -53,7 +53,7 @@ public class MongoQueryPreparer {
             BasicDBList and = new BasicDBList();
             and.add(leftCondition);
             and.add(rightCondition);
-            basicDBObject.put(AND, and);
+            whereObject.put(AND, and);
         } else if (where.contains(OR)) {
             BasicDBObject leftCondition = getWhereConditions(computeLeftCondition(where, OR));
             BasicDBObject rightCondition = getWhereConditions(computeRightCondition(where, OR));
@@ -61,31 +61,31 @@ public class MongoQueryPreparer {
             BasicDBList or = new BasicDBList();
             or.add(leftCondition);
             or.add(rightCondition);
-            basicDBObject.put(OR, or);
+            whereObject.put(OR, or);
         } else {
             String[] split = where.split(" ");
             assert split.length == 3;
             if (split[1].equals("$eq")) {
-                basicDBObject.put(split[0], split[2]);
-                return basicDBObject;
+                whereObject.put(split[0], split[2]);
+                return whereObject;
             } else {
-                basicDBObject.put(split[0], new BasicDBObject(split[1], split[2]));
+                whereObject.put(split[0], new BasicDBObject(split[1], split[2]));
             }
         }
-        return basicDBObject;
+        return whereObject;
     }
 
     private BasicDBObject getSortCondition(String orderBy) {
         if (Objects.isNull(orderBy)) {
             return new BasicDBObject();
         }
-        BasicDBObject result = new BasicDBObject();
+        BasicDBObject orderByObject = new BasicDBObject();
         String combineFields = computeLeftCondition(orderBy, (orderBy.contains(DESC)) ? DESC : ASC);
         String[] fields = combineFields.split(",");
         for (String field : fields) {
-            result.append(field, orderBy.contains(DESC) ? -1 : 1);
+            orderByObject.append(field, orderBy.contains(DESC) ? -1 : 1);
         }
-        return result;
+        return orderByObject;
     }
 
     private String computeLeftCondition(String str, String delimiter) {
