@@ -76,16 +76,49 @@ public class MongoQueryPreparer {
     }
 
     private BasicDBObject getSortCondition(String orderBy) {
-        if (Objects.isNull(orderBy)) {
-            return new BasicDBObject();
-        }
         BasicDBObject orderByObject = new BasicDBObject();
-        String combineFields = computeLeftCondition(orderBy, (orderBy.contains(DESC)) ? DESC : ASC);
-        String[] fields = combineFields.split(",");
-        for (String field : fields) {
-            orderByObject.append(field, orderBy.contains(DESC) ? -1 : 1);
+        if (Objects.isNull(orderBy)) {
+            return orderByObject;
         }
+        getSortConditionSupport(orderBy).forEach(orderByObject::append);
         return orderByObject;
+    }
+
+    private Map<String, Integer> getSortConditionSupport(String orderBy) {
+        Map<String, Integer> orderByMap = new HashMap<>();
+        if (orderBy.contains(DESC)) {
+            orderBy = (orderBy.startsWith(",")) ? orderBy.substring(1, orderBy.length()).trim() : orderBy;
+            String left = orderBy.substring(0, orderBy.indexOf(DESC));
+            String[] split = left.split(",");
+            for (String s : split) {
+                orderByMap.put(s.trim(), -1);
+            }
+            orderBy = orderBy.substring(left.length() + DESC.length(), orderBy.length()).trim();
+            orderByMap.putAll(getSortConditionSupport(orderBy));
+        }
+        if (orderBy.contains(ASC)) {
+            orderBy = (orderBy.startsWith(",")) ? orderBy.substring(1, orderBy.length()).trim() : orderBy;
+            String left = orderBy.substring(0, orderBy.indexOf(ASC));
+            String[] split = left.split(",");
+            for (String s : split) {
+                orderByMap.put(s.trim(), 1);
+            }
+            orderBy = orderBy.substring(left.length() + ASC.length(), orderBy.length()).trim();
+            orderByMap.putAll(getSortConditionSupport(orderBy));
+        }
+        return orderByMap;
+    }
+
+    private Map<String, Integer> method(String query, String direction) {
+        Map<String, Integer> result = new HashMap<>();
+        query = (query.startsWith(",")) ? query.substring(1, query.length()).trim() : query;
+        String left = query.substring(0, query.indexOf(direction));
+        String[] split = left.split(",");
+        int dir = (direction.equals(DESC)) ? -1 : 1;
+        for (String s : split) {
+            result.put(s.trim(), dir);
+        }
+        return result;
     }
 
     private String computeLeftCondition(String str, String delimiter) {

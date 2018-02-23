@@ -13,7 +13,7 @@ public class ReservedWordsChecker extends SyntaxChecker {
         Arrays.stream(query.split(" ")).forEach(s -> checkedResult.computeIfPresent(s, (k, v) -> v + 1));
         checkedResult.forEach((k, v) -> {
             if (v > 1) {
-                throw new SyntaxParseException(String.format("must be only one reserved words : \n%s \nyou have %s : %d", reservedWords, k, v));
+                throw new SyntaxParseException(String.format("Must be only one reserved words : %s you have %s : %d", reservedWords, k, v));
             }
         });
     }

@@ -1,7 +1,14 @@
 package app;
 
 import app.cli.Cli;
+import app.command.Command;
+import app.command.ExitCommand;
+import app.command.HelpCommand;
+import app.command.SetDatabaseCommand;
 import app.mongo.MongoClientManager;
+import app.mongo.MongoQueryPreparer;
+import app.mongo.MongoRequestHandler;
+import app.parser.Parser;
 import app.service.ConsoleService;
 import app.syntax.check.ReservedWordsChecker;
 import app.syntax.check.SelectQueryChecker;
@@ -20,13 +27,16 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Cli cli = new Cli();
         MongoClientManager mongoClientManager = new MongoClientManager();
-        ConsoleService consoleService = new ConsoleService(mongoClientManager, checkers, cli);
+        MongoQueryPreparer queryPreparer = new MongoQueryPreparer(new Parser(checkers));
+
+        ConsoleService consoleService = new ConsoleService(mongoClientManager, queryPreparer, cli);
         consoleService.doService(args);
-        while (true) {
+        boolean isExit = false;
+        while (!isExit) {
             try {
                 System.out.print("mongo-client>");
                 String nextQuery = scanner.nextLine();
-                consoleService.doService(nextQuery);
+                isExit = consoleService.doService(nextQuery);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

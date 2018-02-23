@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class SyntaxChecker {
 
-    static List<String> reservedWords = new ArrayList<String>() {{
+    protected static List<String> reservedWords = new ArrayList<String>() {{
         add("SELECT");
         add("FROM");
         add("WHERE");

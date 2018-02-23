@@ -1,90 +1,68 @@
 package app.service;
 
 import app.cli.Cli;
-import app.mongo.MongoQueryPreparer;
-import app.parser.Parser;
-import app.syntax.check.SyntaxChecker;
+import app.command.Command;
+import app.mongo.MongoCharacterAdapter;
 import app.mongo.MongoClientManager;
+import app.mongo.MongoQueryPreparer;
 import app.mongo.MongoRequestHandler;
+import app.mongo.PreparedMongoQuery;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
 
 import java.net.MalformedURLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static app.cli.Cli.ConsoleCommand.*;
 
 public class ConsoleService {
 
-    private static Map<String, String> expressionsMap = new HashMap<String, String>() {{
-        put(" = ", " $eq ");
-        put(" > ", " $gt ");
-        put(" < ", " $lt ");
-        put(" >= ", " $gte ");
-        put(" <= ", " $lte ");
-        put(" <> ", " $ne ");
-        put(" AND ", " $and ");
-        put(" OR ", " $or ");
-    }};
-
     private MongoClientManager mongoClientManager;
+    private MongoQueryPreparer preparer;
     private MongoRequestHandler mongoRequestHandler;
     private CommandLine commandLine;
-    private List<SyntaxChecker> syntaxCheckers;
     private Cli cli;
 
     public ConsoleService(MongoClientManager mongoClientManager,
-                          List<SyntaxChecker> syntaxCheckers,
+                          MongoQueryPreparer preparer,
                           Cli cli) {
         this.mongoClientManager = mongoClientManager;
-        this.syntaxCheckers = syntaxCheckers;
+        this.preparer = preparer;
         this.cli = cli;
     }
 
-    public void doService(String... args) throws Exception {
-        commandLine = cli.getPreparedCommandLine(prepareArgs(args));
+    public boolean doService(String... args) throws ParseException {
+        for (int i = 0; i < args.length; i++) {
+            args[i] = MongoCharacterAdapter.convertCharacters(args[i]);
+        }
+        commandLine = cli.getPreparedCommandLine(args);
         if (commandLine.hasOption(HELP.getNotation())) {
             cli.printCliHelp();
+            return false;
         } else if (commandLine.hasOption(URL.getNotation())) {
-            initDatabase();
+            setDatabase();
+            return false;
         } else if (commandLine.hasOption(QUERY.getNotation())) {
             processQuery();
-        } else if (commandLine.hasOption(EXIT.getNotation())) {
-            exit();
+            return false;
         } else if (commandLine.hasOption(CURRENT_DB.getNotation())) {
             System.out.println(mongoClientManager.getUriToCurrentDatabase());
+            return false;
+        } else if (commandLine.hasOption(EXIT.getNotation())) {
+            mongoClientManager.closeConnection();
+            return true;
         }
+        return false;
     }
 
-    private String[] prepareArgs(String... args) {
-        for (int i = 0; i < args.length; i++) {
-            for (String s : expressionsMap.keySet()) {
-                if (args[i].contains(s)) {
-                    args[i] = args[i].replace(s, expressionsMap.get(s));
-                }
-            }
-
-        }
-        return args;
-    }
-
-    private void initDatabase() throws MalformedURLException {
+    private void setDatabase() {
         String urlStringNotation = commandLine.getOptionValue(URL.getNotation());
         mongoRequestHandler = new MongoRequestHandler(mongoClientManager.getDatabaseByUri(urlStringNotation.trim()));
     }
 
     private void processQuery() {
         String query = commandLine.getOptionValue(QUERY.getNotation());
-        //validate SQL
-        syntaxCheckers.forEach(syntaxChecker -> syntaxChecker.validateSqlQuery(query.trim()));
-
-        MongoQueryPreparer preparer = new MongoQueryPreparer(new Parser());
-        mongoRequestHandler.doQuery(preparer.preparedMongoQuery(query)).forEach(System.out::println);
-    }
-
-    private void exit() {
-        mongoClientManager.closeConnection();
-        System.exit(0);
+        PreparedMongoQuery preparedQuery = preparer.preparedMongoQuery(query.trim());
+        mongoRequestHandler.doQuery(preparedQuery).forEach(System.out::println);
     }
 }
