@@ -38,7 +38,7 @@ public class Main {
         boolean isExit = false;
         while (!isExit) {
             try {
-                System.out.print("mongo-mongoClient>");
+                System.out.print("mongo-client>");
                 String nextQuery = scanner.nextLine();
                 isExit = consoleService.doService(nextQuery);
             } catch (Exception e) {

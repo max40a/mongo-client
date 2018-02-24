@@ -8,13 +8,14 @@ public class ReservedWordsChecker implements SyntaxChecker {
         add("SELECT");
         add("FROM");
         add("WHERE");
-        add("ORDER_BY");
+        add("ORDER");
         add("SKIP");
         add("LIMIT");
     }};
 
     @Override
     public void validateSqlQuery(String query) {
+        query = query.contains("BY") ? query.replace("BY", "") : query;
         Map<String, Integer> checkedResult = new LinkedHashMap<>();
         reservedWords.forEach(s -> checkedResult.put(s, 0));
         Arrays.stream(query.split(" ")).forEach(s -> checkedResult.computeIfPresent(s, (k, v) -> v + 1));

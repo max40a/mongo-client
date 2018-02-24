@@ -69,7 +69,7 @@ public class ParserTest {
 
     @Test
     public void test_sql_query_has_composite_where_condition_and_order_by_conditions() {
-        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 AND b <> 5 OR c = test ORDER_BY a, b DESC c ASC";
+        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 AND b <> 5 OR c = test ORDER BY a, b DESC c ASC";
         Map<String, String> expectedData = new HashMap<String, String>() {{
             put("PROJECTIONS", "a, b, c");
             put("TARGET", "someDb");
@@ -83,7 +83,7 @@ public class ParserTest {
 
     @Test
     public void test_sql_query_not_has_where_condition_has_order_by_conditions() {
-        String testQuery = "SELECT a, b, c FROM someDb ORDER_BY a, b DESC c ASC";
+        String testQuery = "SELECT a, b, c FROM someDb ORDER BY a, b DESC c ASC";
         Map<String, String> expectedData = new HashMap<String, String>() {{
             put("PROJECTIONS", "a, b, c");
             put("TARGET", "someDb");
@@ -96,7 +96,7 @@ public class ParserTest {
 
     @Test
     public void test_sql_query_has_while_order_by_skip_conditions() {
-        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 AND b <> 5 OR c = test ORDER_BY a, b DESC c ASC SKIP 10";
+        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 AND b <> 5 OR c = test ORDER BY a, b DESC c ASC SKIP 10";
         Map<String, String> expectedData = new HashMap<String, String>() {{
             put("PROJECTIONS", "a, b, c");
             put("TARGET", "someDb");
@@ -111,7 +111,7 @@ public class ParserTest {
 
     @Test
     public void test_sql_query_has_while_order_by_skip_limit_conditions() {
-        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 AND b <> 5 OR c = test ORDER_BY a, b DESC c ASC SKIP 10 LIMIT 5";
+        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 AND b <> 5 OR c = test ORDER BY a, b DESC c ASC SKIP 10 LIMIT 5";
         Map<String, String> expectedData = new HashMap<String, String>() {{
             put("PROJECTIONS", "a, b, c");
             put("TARGET", "someDb");
@@ -147,7 +147,7 @@ public class ParserTest {
 
     @Test()
     public void test_query_has_more_than_one_reserved_word() {
-        String expectExceptionMessage = "Must be only one reserved words : [SELECT, FROM, WHERE, ORDER_BY, SKIP, LIMIT] you have FROM : 2";
+        String expectExceptionMessage = "Must be only one reserved words : [SELECT, FROM, WHERE, ORDER, SKIP, LIMIT] you have FROM : 2";
         exception.expect(SyntaxParseException.class);
         exception.expectMessage(expectExceptionMessage);
         String notSelectQuery = "SELECT * FROM FROM counter WHERE id > 2";

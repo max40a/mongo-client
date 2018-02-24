@@ -39,10 +39,12 @@ public class Parser {
             String key = options.get(i).name();
             String till = options.get(i + 1).name();
             String value = query.substring(query.indexOf(key) + key.length(), query.indexOf(till));
+            value = (value.startsWith(" BY")) ? value.substring(" BY".length(), value.length()) : value;
             result.put(options.get(i).getPropertyName(), value.trim());
         }
         String key = options.get(options.size() - 1).name();
         String value = query.substring(query.indexOf(key) + key.length());
+        value = (value.startsWith(" BY")) ? value.substring(" BY".length(), value.length()) : value;
         result.put(options.get(options.size() - 1).getPropertyName(), value.trim());
         return result;
     }

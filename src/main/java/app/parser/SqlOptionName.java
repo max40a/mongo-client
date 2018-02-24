@@ -5,7 +5,7 @@ public enum SqlOptionName {
     SELECT("PROJECTIONS"),
     FROM("TARGET"),
     WHERE("CONDITION"),
-    ORDER_BY("FIELDS"),
+    ORDER("FIELDS"),
     SKIP("SKIP_RECORDS"),
     LIMIT("MAX_RECORDS");
 
