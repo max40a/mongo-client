@@ -33,7 +33,7 @@ public class MongoQueryPreparerTest {
                 .limitRecords(5)
                 .build();
 
-        PreparedMongoQuery actual = testObject.preparedMongoQuery(adaptedQuery);
+        PreparedMongoQuery actual = testObject.prepareMongoQuery(adaptedQuery);
         assertEquals(expected, actual);
     }
 

@@ -21,7 +21,7 @@ public class MongoQueryPreparer {
         this.parser = parser;
     }
 
-    public PreparedMongoQuery preparedMongoQuery(String query) {
+    public PreparedMongoQuery prepareMongoQuery(String query) {
         Map<String, String> parsedSqlQueryMap = parser.parseSqlQuery(query);
         return PreparedMongoQuery.builder()
                 .target(parsedSqlQueryMap.get(SqlOptionName.FROM.getPropertyName()))

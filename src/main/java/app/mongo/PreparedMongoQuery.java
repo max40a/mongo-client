@@ -8,6 +8,7 @@ import java.util.List;
 @Builder
 @Getter
 @EqualsAndHashCode
+@ToString
 public class PreparedMongoQuery {
     private String target;
     private List<String> projections;

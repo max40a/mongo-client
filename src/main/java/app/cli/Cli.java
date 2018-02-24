@@ -18,7 +18,7 @@ public class Cli {
     }
 
     public void printCliHelp() {
-        String commandLineSyntax = "USE : java -jar my-mongo-client.jar";
+        String commandLineSyntax = "USE : java -jar my-mongo-mongoClient.jar";
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp(
                 commandLineSyntax,
