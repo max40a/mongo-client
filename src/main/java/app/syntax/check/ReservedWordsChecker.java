@@ -1,10 +1,17 @@
 package app.syntax.check;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
-public class ReservedWordsChecker extends SyntaxChecker {
+public class ReservedWordsChecker implements SyntaxChecker {
+
+    private List<String> reservedWords = new ArrayList<String>() {{
+        add("SELECT");
+        add("FROM");
+        add("WHERE");
+        add("ORDER_BY");
+        add("SKIP");
+        add("LIMIT");
+    }};
 
     @Override
     public void validateSqlQuery(String query) {

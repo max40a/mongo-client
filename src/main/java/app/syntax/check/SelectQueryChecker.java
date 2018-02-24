@@ -1,6 +1,6 @@
 package app.syntax.check;
 
-public class SelectQueryChecker extends SyntaxChecker {
+public class SelectQueryChecker implements SyntaxChecker {
 
     @Override
     public void validateSqlQuery(String query) {
