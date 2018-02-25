@@ -22,7 +22,7 @@ public class MongoQueryPreparerTest {
 
     @Test
     public void test_preparedMongoQuery_method() {
-        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 OR b <> 5 AND c = test ORDER_BY a, b DESC c ASC SKIP 10 LIMIT 5";
+        String testQuery = "SELECT a, b, c FROM someDb WHERE a > 2 OR b <> 5 AND c = test ORDER BY a, b DESC c ASC SKIP 10 LIMIT 5";
         String adaptedQuery = MongoCharacterAdapter.convertCharacters(testQuery);
         PreparedMongoQuery expected = PreparedMongoQuery.builder()
                 .target("someDb")

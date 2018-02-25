@@ -4,16 +4,19 @@ import app.cli.Cli;
 import app.command.Command;
 import app.mongo.MongoCharacterAdapter;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class ConsoleService {
 
     private Cli cli;
-    private List<Command> commands;
+    private Map<Cli.ConsoleCommand, Command> commands;
 
-    public ConsoleService(Cli cli, List<Command> commands) {
+    public ConsoleService(Cli cli, Map<Cli.ConsoleCommand, Command> commands) {
         this.cli = cli;
         this.commands = commands;
     }
@@ -23,11 +26,11 @@ public class ConsoleService {
             args[i] = MongoCharacterAdapter.convertCharacters(args[i]);
         }
         CommandLine preparedCommandLine = cli.getPreparedCommandLine(args);
-        for (Command command : commands) {
-            for (Cli.ConsoleCommand consoleCommand : Cli.ConsoleCommand.values()) {
-                if (preparedCommandLine.hasOption(consoleCommand.getNotation()) && command.isCommand(consoleCommand)) {
-                    return command.doCommand(preparedCommandLine);
-                }
+        Cli.ConsoleCommand[] consoleCommands = Cli.ConsoleCommand.values();
+        for (Cli.ConsoleCommand command : consoleCommands) {
+            if (preparedCommandLine.hasOption(command.getNotation())) {
+                String optionValue = preparedCommandLine.getOptionValue(command.getNotation());
+                return commands.get(command).doCommand(optionValue);
             }
         }
         return false;

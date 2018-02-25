@@ -5,15 +5,8 @@ import org.apache.commons.cli.CommandLine;
 
 public class ShowHelpCommand extends Command {
 
-    private Cli.ConsoleCommand commandId = Cli.ConsoleCommand.HELP;
-
     @Override
-    public boolean isCommand(Cli.ConsoleCommand consoleCommand) {
-        return this.commandId == consoleCommand;
-    }
-
-    @Override
-    public boolean doCommand(CommandLine commandLine) {
+    public boolean doCommand(String data) {
         new Cli().printCliHelp();
         return false;
     }

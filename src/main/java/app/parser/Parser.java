@@ -20,14 +20,14 @@ public class Parser {
     public Map<String, String> parseSqlQuery(String query) {
         sqlSyntaxCheck(query);
         this.query = query;
-        return parseQuery(analyzePresentFields());
+        return parseQuery(analyzePresentReservedWords());
     }
 
     private void sqlSyntaxCheck(String query) {
         checkers.forEach(syntaxChecker -> syntaxChecker.validateSqlQuery(query));
     }
 
-    private List<SqlOptionName> analyzePresentFields() {
+    private List<SqlOptionName> analyzePresentReservedWords() {
         return Arrays.stream(SqlOptionName.values())
                 .filter(f -> query.contains(f.name()))
                 .collect(Collectors.toList());
@@ -38,13 +38,13 @@ public class Parser {
         for (int i = 0; i < options.size() - 1; i++) {
             String key = options.get(i).name();
             String till = options.get(i + 1).name();
-            String value = query.substring(query.indexOf(key) + key.length(), query.indexOf(till));
-            value = (value.startsWith(" BY")) ? value.substring(" BY".length(), value.length()) : value;
+            String value = query.substring(query.indexOf(key) + key.length(), query.indexOf(till)).trim();
+            value = (value.startsWith("BY")) ? value.substring("BY".length(), value.length()) : value;
             result.put(options.get(i).getPropertyName(), value.trim());
         }
         String key = options.get(options.size() - 1).name();
-        String value = query.substring(query.indexOf(key) + key.length());
-        value = (value.startsWith(" BY")) ? value.substring(" BY".length(), value.length()) : value;
+        String value = query.substring(query.indexOf(key) + key.length()).trim();
+        value = (value.startsWith("BY")) ? value.substring("BY".length(), value.length()) : value;
         result.put(options.get(options.size() - 1).getPropertyName(), value.trim());
         return result;
     }

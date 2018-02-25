@@ -9,9 +9,7 @@ import app.syntax.check.ReservedWordsChecker;
 import app.syntax.check.SelectQueryChecker;
 import app.syntax.check.SyntaxChecker;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -25,12 +23,12 @@ public class Main {
             add(new SelectQueryChecker());
         }};
 
-        List<Command> commands = new ArrayList<Command>() {{
-            add(new InitMongoCommand());
-            add(new ShowCurrentDbUriCommand());
-            add(new QueryCommand(new MongoQueryPreparer(new Parser(checkers))));
-            add(new ExitCommand());
-            add(new ShowHelpCommand());
+        Map<Cli.ConsoleCommand, Command> commands = new HashMap<Cli.ConsoleCommand, Command>() {{
+            put(Cli.ConsoleCommand.URL, new InitMongoCommand());
+            put(Cli.ConsoleCommand.QUERY, new QueryCommand(new MongoQueryPreparer(new Parser(checkers))));
+            put(Cli.ConsoleCommand.HELP, new ShowHelpCommand());
+            put(Cli.ConsoleCommand.EXIT, new ExitCommand());
+            put(Cli.ConsoleCommand.CURRENT_DB, new ShowCurrentDbUriCommand());
         }};
 
         ConsoleService consoleService = new ConsoleService(cli, commands);
