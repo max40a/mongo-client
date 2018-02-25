@@ -63,13 +63,18 @@ public class MongoQueryPreparer {
             or.add(rightCondition);
             whereObject.put(OR, or);
         } else {
-            String[] split = where.split(" ");
-            assert split.length == 3;
-            if (split[1].equals("$eq")) {
-                whereObject.put(split[0], split[2]);
+            String[] mongoExpressions = {"$eq", "$gt", "$lt", "$gte", "$lte", "$ne", "$and", "$or"};
+            String mongoExp = "";
+            for (String exp : mongoExpressions) {
+                mongoExp = where.contains(exp) ? exp : mongoExp;
+            }
+            String left = computeLeftCondition(where, mongoExp);
+            String right = computeRightCondition(where, mongoExp);
+            if (mongoExp.equals("$eq")) {
+                whereObject.put(left, right);
                 return whereObject;
             } else {
-                whereObject.put(split[0], new BasicDBObject(split[1], split[2]));
+                whereObject.put(left, new BasicDBObject(mongoExp, right));
             }
         }
         return whereObject;

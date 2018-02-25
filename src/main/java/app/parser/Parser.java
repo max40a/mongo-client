@@ -37,8 +37,8 @@ public class Parser {
         Map<String, String> result = new HashMap<>();
         for (int i = 0; i < options.size() - 1; i++) {
             String key = options.get(i).name();
-            String till = options.get(i + 1).name();
-            String value = query.substring(query.indexOf(key) + key.length(), query.indexOf(till)).trim();
+            String tail = options.get(i + 1).name();
+            String value = query.substring(query.indexOf(key) + key.length(), query.indexOf(tail)).trim();
             value = (value.startsWith("BY")) ? value.substring("BY".length(), value.length()) : value;
             result.put(options.get(i).getPropertyName(), value.trim());
         }
