@@ -3,7 +3,7 @@ package app.command;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
-public class InitMongoCommand extends Command {
+public class InitMongoCommand extends AbstractCommand {
 
     @Override
     public boolean doCommand(String uri) {

@@ -26,7 +26,7 @@ public class Main {
         Map<Cli.ConsoleCommand, Command> commands = new HashMap<Cli.ConsoleCommand, Command>() {{
             put(Cli.ConsoleCommand.URL, new InitMongoCommand());
             put(Cli.ConsoleCommand.QUERY, new QueryCommand(new MongoQueryPreparer(new Parser(checkers))));
-            put(Cli.ConsoleCommand.HELP, new ShowHelpCommand());
+            put(Cli.ConsoleCommand.HELP, new ShowHelpCommand(cli));
             put(Cli.ConsoleCommand.EXIT, new ExitCommand());
             put(Cli.ConsoleCommand.CURRENT_DB, new ShowCurrentDbUriCommand());
         }};

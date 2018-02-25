@@ -1,14 +1,12 @@
 package app.service;
 
 import app.cli.Cli;
+import app.command.AbstractCommand;
 import app.command.Command;
 import app.mongo.MongoCharacterAdapter;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class ConsoleService {

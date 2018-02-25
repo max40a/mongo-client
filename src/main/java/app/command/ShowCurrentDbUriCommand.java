@@ -1,6 +1,6 @@
 package app.command;
 
-public class ShowCurrentDbUriCommand extends Command {
+public class ShowCurrentDbUriCommand extends AbstractCommand {
 
     @Override
     public boolean doCommand(String data) {

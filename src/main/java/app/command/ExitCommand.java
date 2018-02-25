@@ -1,6 +1,6 @@
 package app.command;
 
-public class ExitCommand extends Command {
+public class ExitCommand extends AbstractCommand {
 
     @Override
     public boolean doCommand(String data) {

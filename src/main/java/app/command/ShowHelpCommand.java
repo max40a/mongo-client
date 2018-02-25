@@ -1,13 +1,18 @@
 package app.command;
 
 import app.cli.Cli;
-import org.apache.commons.cli.CommandLine;
 
-public class ShowHelpCommand extends Command {
+public class ShowHelpCommand implements Command {
+
+    private Cli cli;
+
+    public ShowHelpCommand(Cli cli) {
+        this.cli = cli;
+    }
 
     @Override
     public boolean doCommand(String data) {
-        new Cli().printCliHelp();
+        this.cli.printCliHelp();
         return false;
     }
 }

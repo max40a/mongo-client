@@ -5,7 +5,7 @@ import app.mongo.MongoRequestHandler;
 import app.mongo.PreparedMongoQuery;
 import com.mongodb.client.MongoDatabase;
 
-public class QueryCommand extends Command {
+public class QueryCommand extends AbstractCommand {
 
     private MongoQueryPreparer preparer;
 
