@@ -27,25 +27,25 @@ public class Parser {
         checkers.forEach(syntaxChecker -> syntaxChecker.validateSqlQuery(query));
     }
 
-    private List<SqlOptionName> analyzePresentReservedWords() {
-        return Arrays.stream(SqlOptionName.values())
-                .filter(f -> query.contains(f.name()))
+    private List<SqlReservedWord> analyzePresentReservedWords() {
+        return Arrays.stream(SqlReservedWord.values())
+                .filter(f -> query.contains(f.getReservedWord()))
                 .collect(Collectors.toList());
     }
 
-    private Map<String, String> parseQuery(List<SqlOptionName> options) {
+    private Map<String, String> parseQuery(List<SqlReservedWord> reservedWords) {
         Map<String, String> result = new HashMap<>();
-        for (int i = 0; i < options.size() - 1; i++) {
-            String key = options.get(i).name();
-            String tail = options.get(i + 1).name();
+        for (int i = 0; i < reservedWords.size() - 1; i++) {
+            String key = reservedWords.get(i).getReservedWord();
+            String tail = reservedWords.get(i + 1).getReservedWord();
             String value = query.substring(query.indexOf(key) + key.length(), query.indexOf(tail)).trim();
-            value = (value.startsWith("BY")) ? value.substring("BY".length(), value.length()) : value;
-            result.put(options.get(i).getPropertyName(), value.trim());
+            String adjective = reservedWords.get(i).getAdjective();
+            result.put(adjective, value);
         }
-        String key = options.get(options.size() - 1).name();
+        String key = reservedWords.get(reservedWords.size() - 1).getReservedWord();
         String value = query.substring(query.indexOf(key) + key.length()).trim();
-        value = (value.startsWith("BY")) ? value.substring("BY".length(), value.length()) : value;
-        result.put(options.get(options.size() - 1).getPropertyName(), value.trim());
+        String adjective = reservedWords.get(reservedWords.size() - 1).getAdjective();
+        result.put(adjective, value);
         return result;
     }
 }

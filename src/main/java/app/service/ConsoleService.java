@@ -1,7 +1,6 @@
 package app.service;
 
 import app.cli.Cli;
-import app.command.AbstractCommand;
 import app.command.Command;
 import app.mongo.MongoCharacterAdapter;
 import org.apache.commons.cli.CommandLine;

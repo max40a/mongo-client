@@ -129,7 +129,7 @@ public class ParserTest {
 
     @Test
     public void test_not_select_query() {
-        String expectExceptionMessage = "Support only SELECT query.Query must begin: SELECT <projections>";
+        String expectExceptionMessage = "Support only SELECT query. Query must begin: SELECT <projections>";
         exception.expect(SyntaxParseException.class);
         exception.expectMessage(expectExceptionMessage);
         String notSelectQuery = "UPDATE test SET test.id = 3 counter WHERE test.id = 2";
@@ -147,7 +147,7 @@ public class ParserTest {
 
     @Test()
     public void test_query_has_more_than_one_reserved_word() {
-        String expectExceptionMessage = "Must be only one reserved words : [SELECT, FROM, WHERE, ORDER, SKIP, LIMIT] you have FROM : 2";
+        String expectExceptionMessage = "Must be only one reserved words : [SELECT, FROM, WHERE, ORDER BY, SKIP, LIMIT] you have FROM : 2";
         exception.expect(SyntaxParseException.class);
         exception.expectMessage(expectExceptionMessage);
         String notSelectQuery = "SELECT * FROM FROM counter WHERE id > 2";

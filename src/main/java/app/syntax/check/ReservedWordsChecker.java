@@ -8,7 +8,7 @@ public class ReservedWordsChecker implements SyntaxChecker {
         add("SELECT");
         add("FROM");
         add("WHERE");
-        add("ORDER");
+        add("ORDER BY");
         add("SKIP");
         add("LIMIT");
     }};

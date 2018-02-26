@@ -1,6 +1,6 @@
 package app.mongo;
 
-import app.parser.SqlOptionName;
+import app.parser.SqlReservedWord;
 import app.parser.Parser;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -24,12 +24,12 @@ public class MongoQueryPreparer {
     public PreparedMongoQuery prepareMongoQuery(String query) {
         Map<String, String> parsedSqlQueryMap = parser.parseSqlQuery(query);
         return PreparedMongoQuery.builder()
-                .target(parsedSqlQueryMap.get(SqlOptionName.FROM.getPropertyName()))
-                .projections(getProjection(parsedSqlQueryMap.get(SqlOptionName.SELECT.getPropertyName())))
-                .conditions(getWhereConditions(parsedSqlQueryMap.get(SqlOptionName.WHERE.getPropertyName())))
-                .fields(getSortCondition(parsedSqlQueryMap.get(SqlOptionName.ORDER.getPropertyName())))
-                .skipRecords(getInt(parsedSqlQueryMap.get(SqlOptionName.SKIP.getPropertyName())))
-                .limitRecords(getInt(parsedSqlQueryMap.get(SqlOptionName.LIMIT.getPropertyName())))
+                .target(parsedSqlQueryMap.get(SqlReservedWord.FROM.getAdjective()))
+                .projections(getProjection(parsedSqlQueryMap.get(SqlReservedWord.SELECT.getAdjective())))
+                .conditions(getWhereConditions(parsedSqlQueryMap.get(SqlReservedWord.WHERE.getAdjective())))
+                .fields(getSortCondition(parsedSqlQueryMap.get(SqlReservedWord.ORDER.getAdjective())))
+                .skipRecords(getInt(parsedSqlQueryMap.get(SqlReservedWord.SKIP.getAdjective())))
+                .limitRecords(getInt(parsedSqlQueryMap.get(SqlReservedWord.LIMIT.getAdjective())))
                 .build();
     }
 
