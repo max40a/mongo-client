@@ -6,7 +6,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Projections;
 import org.bson.Document;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -18,7 +18,7 @@ public class MongoRequestHandler {
         this.database = database;
     }
 
-    public List<String> doQuery(PreparedMongoQuery preparedQuery) {
+    public List<Document> doQuery(PreparedMongoQuery preparedQuery) {
         MongoCollection<Document> collection = database.getCollection(preparedQuery.getTarget());
         FindIterable<Document> resultOfQuery = collection.find()
                 .projection(Projections.include(preparedQuery.getProjections()))
@@ -27,8 +27,6 @@ public class MongoRequestHandler {
                 .skip(preparedQuery.getSkipRecords())
                 .limit(preparedQuery.getLimitRecords());
         return StreamSupport.stream(resultOfQuery.spliterator(), false)
-                .map(Document::entrySet)
-                .map(Objects::toString)
                 .collect(Collectors.toList());
     }
 }
