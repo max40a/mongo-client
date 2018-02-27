@@ -1,7 +1,5 @@
 package app.parser;
 
-import app.syntax.check.ReservedWordsChecker;
-import app.syntax.check.SelectQueryChecker;
 import app.syntax.check.SyntaxParseException;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.After;
@@ -10,7 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +25,7 @@ public class ParserTest {
 
     @Before
     public void setUp() {
-        testObj = new Parser(Arrays.asList(new SelectQueryChecker(), new ReservedWordsChecker()));
+        testObj = new Parser(Collections.emptyList());
     }
 
     @Test
@@ -125,33 +123,6 @@ public class ParserTest {
         for (Map.Entry<String, String> entry : expectedData.entrySet()) {
             assertThat(testObj.parseSqlQuery(testQuery), IsMapContaining.hasEntry(entry.getKey(), entry.getValue()));
         }
-    }
-
-    @Test
-    public void test_not_select_query() {
-        String expectExceptionMessage = "Support only SELECT query. Query must begin: SELECT <projections>";
-        exception.expect(SyntaxParseException.class);
-        exception.expectMessage(expectExceptionMessage);
-        String notSelectQuery = "UPDATE test SET test.id = 3 counter WHERE test.id = 2";
-        testObj.parseSqlQuery(notSelectQuery);
-    }
-
-    @Test()
-    public void test_not_select_have_not_target_condition() {
-        String expectExceptionMessage = "Query must be consist: FROM <target>";
-        exception.expect(SyntaxParseException.class);
-        exception.expectMessage(expectExceptionMessage);
-        String notSelectQuery = "SELECT * WHERE id > 2";
-        testObj.parseSqlQuery(notSelectQuery);
-    }
-
-    @Test()
-    public void test_query_has_more_than_one_reserved_word() {
-        String expectExceptionMessage = "Must be only one reserved words : [SELECT, FROM, WHERE, ORDER BY, SKIP, LIMIT] you have FROM : 2";
-        exception.expect(SyntaxParseException.class);
-        exception.expectMessage(expectExceptionMessage);
-        String notSelectQuery = "SELECT * FROM FROM counter WHERE id > 2";
-        testObj.parseSqlQuery(notSelectQuery);
     }
 
     @After

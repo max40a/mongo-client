@@ -5,6 +5,7 @@ import app.command.*;
 import app.mongo.MongoQueryPreparer;
 import app.parser.Parser;
 import app.service.ConsoleService;
+import app.syntax.check.NumberInputChecker;
 import app.syntax.check.ReservedWordsChecker;
 import app.syntax.check.SelectQueryChecker;
 import app.syntax.check.SyntaxChecker;
@@ -21,6 +22,7 @@ public class Main {
         List<SyntaxChecker> checkers = new ArrayList<SyntaxChecker>() {{
             add(new ReservedWordsChecker());
             add(new SelectQueryChecker());
+            add(new NumberInputChecker());
         }};
 
         Map<Cli.ConsoleCommand, Command> commands = new HashMap<Cli.ConsoleCommand, Command>() {{
@@ -40,7 +42,7 @@ public class Main {
                 String nextQuery = scanner.nextLine();
                 isExit = consoleService.doService(nextQuery);
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("ERROR> " + e.getMessage());
             }
         }
     }

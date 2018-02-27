@@ -18,7 +18,7 @@ public class Cli {
     }
 
     public void printCliHelp() {
-        String commandLineSyntax = "USE : java -jar my-mongo-mongoClient.jar";
+        String commandLineSyntax = "USE : java -jar alternative-mongo-client.jar";
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp(
                 commandLineSyntax,
@@ -31,39 +31,39 @@ public class Cli {
     private void initOptions() {
         options.addOption(Option.builder("u")
                 .longOpt(ConsoleCommand.URL.notation)
-                .desc("url to database")
+                .desc("Set the url to database.")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .build());
         options.addOption(Option.builder("q")
                 .longOpt(ConsoleCommand.QUERY.notation)
-                .desc("sql query")
+                .desc("Set SQL query.")
                 .hasArg(true)
                 .numberOfArgs(1)
                 .build());
         options.addOption(Option.builder("h")
                 .longOpt(ConsoleCommand.HELP.notation)
-                .desc("help menu")
+                .desc("Show help menu.")
                 .hasArg(false)
                 .build());
         options.addOption(Option.builder("e")
                 .longOpt(ConsoleCommand.EXIT.notation)
-                .desc("exit out program")
+                .desc("Exit out program.")
                 .build());
         options.addOption(Option.builder("c")
                 .longOpt(ConsoleCommand.CURRENT_DB.notation)
-                .desc("show current db url")
+                .desc("Show URI to current database.")
                 .hasArg(false)
                 .build());
     }
 
     public enum ConsoleCommand {
 
-        URL("url"),
+        URL("uri"),
         QUERY("query"),
         HELP("help"),
         EXIT("exit"),
-        CURRENT_DB("current-db-url");
+        CURRENT_DB("current-db-uri");
 
         private String notation;
 
