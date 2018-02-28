@@ -4,8 +4,8 @@ import org.apache.commons.cli.*;
 
 public class Cli {
 
-    private static final String HELP_MENU_HEADER = "=================HELP MENU==================";
-    private static final String HELP_MENU_FOOTER = "============================================";
+    private static final String HELP_MENU_HEADER = "=====================HELP MENU======================";
+    private static final String HELP_MENU_FOOTER = "====================================================";
 
     private Options options = new Options();
 
@@ -22,7 +22,7 @@ public class Cli {
     }
 
     public void printCliHelp() {
-        String commandLineSyntax = "USE : java -jar alternative-mongo-client.jar";
+        String commandLineSyntax = "java -jar alternative-mongo-client.jar";
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.printHelp(
                 commandLineSyntax,
