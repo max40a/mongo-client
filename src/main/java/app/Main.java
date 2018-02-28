@@ -16,7 +16,7 @@ public class Main {
 
     private static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Cli cli = new Cli();
 
         List<SyntaxChecker> checkers = new ArrayList<SyntaxChecker>() {{
@@ -34,7 +34,6 @@ public class Main {
         }};
 
         ConsoleService consoleService = new ConsoleService(cli, commands);
-        consoleService.doService(args);
         boolean isExit = false;
         while (!isExit) {
             try {

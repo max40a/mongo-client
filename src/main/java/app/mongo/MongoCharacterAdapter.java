@@ -3,9 +3,6 @@ package app.mongo;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * */
 public class MongoCharacterAdapter {
 
     private static Map<String, String> expressionsMap = new HashMap<String, String>() {{

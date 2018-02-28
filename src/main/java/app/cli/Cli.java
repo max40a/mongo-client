@@ -13,8 +13,12 @@ public class Cli {
         initOptions();
     }
 
-    public CommandLine getPreparedCommandLine(String[] args) throws ParseException {
-        return new DefaultParser().parse(options, args);
+    public CommandLine getPreparedCommandLine(String[] args) {
+        try {
+            return new DefaultParser().parse(options, args);
+        } catch (ParseException e) {
+            throw new CliException(e.getMessage(), e);
+        }
     }
 
     public void printCliHelp() {

@@ -15,7 +15,6 @@ public class ReservedWordsChecker implements SyntaxChecker {
 
     @Override
     public void validateSqlQuery(String query) {
-        query = query.contains("BY") ? query.replace("BY", "") : query;
         Map<String, Integer> checkedResult = new LinkedHashMap<>();
         reservedWords.forEach(s -> checkedResult.put(s, 0));
         Arrays.stream(query.split(" ")).forEach(s -> checkedResult.computeIfPresent(s, (k, v) -> v + 1));

@@ -4,7 +4,6 @@ import app.cli.Cli;
 import app.command.Command;
 import app.mongo.MongoCharacterAdapter;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
 
 import java.util.Map;
 
@@ -18,7 +17,7 @@ public class ConsoleService {
         this.commands = commands;
     }
 
-    public boolean doService(String... args) throws ParseException {
+    public boolean doService(String... args) {
         for (int i = 0; i < args.length; i++) {
             args[i] = MongoCharacterAdapter.convertCharacters(args[i]);
         }

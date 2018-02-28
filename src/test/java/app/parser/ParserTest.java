@@ -1,12 +1,9 @@
 package app.parser;
 
-import app.syntax.check.SyntaxParseException;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +14,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class ParserTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     private Parser testObj;
 

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class MongoRequestHandlerTest {
 
     private static final String PATH_TO_DB_PROPERTIES = "target/classes/database.properties";
-    private static final String PATH_TO_TEST_DATA = "target/classes/mongo-test-data.txt";
+    private static final String PATH_TO_TEST_DATA = "target/classes/mongo-test-data";
 
     private static final String MONGO_URI = "mongo.uri";
     private static final String MONGO_DATABASE_NAME = "mongo.database.name";
