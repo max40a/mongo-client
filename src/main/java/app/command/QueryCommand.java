@@ -18,6 +18,11 @@ public class QueryCommand extends AbstractCommand {
 
     @Override
     public boolean doCommand(String query) {
+        if (Objects.isNull(mongoClient)) {
+            String message = "You must init connection to mongo database. \n" +
+                    "For example, use command \"-u mongodb://localhost:27017/test\"";
+            throw new CommandException(message);
+        }
         PreparedMongoQuery preparedMongoQuery = preparer.prepareMongoQuery(query.trim());
         MongoDatabase database = mongoClient.getDatabase(mongoClientURI.getDatabase());
         MongoRequestHandler mongoRequestHandler = new MongoRequestHandler(database);
