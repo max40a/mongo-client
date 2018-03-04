@@ -61,6 +61,7 @@ public class MongoRequestHandlerTest {
         testObject = new MongoRequestHandler(database);
     }
 
+    @Ignore
     @Test
     public void test_select_star_from_query() {
         //equals SELECT * FROM test-mongo-client
@@ -94,6 +95,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_projections_from_query() {
         //equals SELECT x, name FROM test-mongo-client
@@ -127,6 +129,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_projections_from_query_and_one_where_condition() {
         //equals SELECT x, name FROM test-mongo-client WHERE x >= 5
@@ -156,6 +159,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_projections_from_query_and_complex_where_condition_1() {
         //equals SELECT x, name FROM test-mongo-client WHERE x >= 5 AND x < 7
@@ -179,6 +183,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_projections_from_query_and_complex_where_condition_2() {
         //equals SELECT x, name FROM test-mongo-client WHERE x >= 8 OR name = Bob
@@ -206,6 +211,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_star_from_query_and_order_by_fields() {
         //equals SELECT * FROM test-mongo-client ORDER BY y ASK name DESC
@@ -239,6 +245,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_star_from_query_and_skip() {
         //equals SELECT * FROM test-mongo-client SKIP 7
@@ -265,6 +272,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_has_star_from_query_and_skip_and_limit() {
         //equals SELECT * FROM test-mongo-client SKIP 7 LIMIT 3
@@ -289,6 +297,7 @@ public class MongoRequestHandlerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test_select_complex_query() {
         //equals SELECT * FROM test-mongo-client WHERE x <= 10 AND x <> 2 ORDER BY name DESC SKIP 2 LIMIT 5
