@@ -4,8 +4,8 @@ import org.apache.commons.cli.*;
 
 public class Cli {
 
-    private static final String HELP_MENU_HEADER = "=====================HELP MENU======================";
-    private static final String HELP_MENU_FOOTER = "====================================================";
+    private static final String HELP_MENU_HEADER = "======================HELP MENU======================";
+    private static final String HELP_MENU_FOOTER = "=====================================================";
 
     private Options options = new Options();
 
